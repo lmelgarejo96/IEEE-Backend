@@ -1,0 +1,4 @@
+GET http://localhost:3000/api/auth/profile
+Cookie: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZFVzdWFyaW8iOjEsImlhdCI6MTU3OTE5NzAwOCwiZXhwIjoxNTc5MjE1MDA4fQ.FlMxN60WQu372vJw2vIqENtU-CGMhj51HItJeUrwDZM; Max-Age=18; Path=/; Expires=Thu, 16 Jan 2020 17:50:26 GMT; HttpOnly; Secure
+
+//
