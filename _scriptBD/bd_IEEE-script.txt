@@ -1,0 +1,290 @@
+--ALTER TABLE Expositor NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Expositor;
+--ALTER TABLE EventoTaller NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS EventoTaller;
+--ALTER TABLE ExpositorEvento NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS ExpositorEvento;
+
+--ALTER TABLE Persona NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Persona;
+--ALTER TABLE Sexo NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Sexo;
+--ALTER TABLE Cargo NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Cargo;
+--ALTER TABLE Usuario NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Usuario;
+--ALTER TABLE TipoUsuario NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS TipoUsuario;
+--ALTER TABLE Asistencia NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Asistencia;
+--ALTER TABLE EventoTaller_Usuario NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS EventoTaller_Usuario;
+--ALTER TABLE Comentarios NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Comentarios;
+--ALTER TABLE NoticiasExtremas NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS NoticiasExtremas;
+--ALTER TABLE Universidad NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Universidad;
+--ALTER TABLE Conocimiento NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Conocimiento;
+--ALTER TABLE Nivel NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Nivel;
+--ALTER TABLE TipoConocimiento NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS TipoConocimiento;
+--ALTER TABLE PersonaConocimiento NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS PersonaConocimiento;
+--ALTER TABLE Estudio NOCHECK CONSTRAINT ALL;
+--DROP TABLE IF EXISTS Estudio;
+
+DROP DATABASE IF EXISTS db_IEEE
+GO
+CREATE DATABASE db_IEEE
+GO
+USE db_IEEE
+GO
+DROP TABLE IF EXISTS dbo.Expositor
+GO
+CREATE TABLE Expositor(
+	IdExpositor int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreExpositor varchar(50) NOT NULL,
+	ApellidoExpositor varchar(50) NOT NULL,
+	Cargo Varchar(500) NOT NULL,
+	Edad int NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+go
+DROP TABLE IF EXISTS dbo.EventoTaller
+GO
+CREATE TABLE EventoTaller(
+	IdEvento int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreEvento varchar(50) NOT NULL,
+	DescripcionEvento varchar(500),
+	FechaInicio date NOT NULL,
+	FechaFin date NOT NULL,
+	HoraInicio time NOT NULL,
+	HoraFin time NOT NULL,
+	LugarEvento varchar(50) NOT NULL,
+	ImagenEvento varchar(500) NOT NULL,
+	Capacidad int NOT NULL,
+	DescripcionOrganizador varchar(250),
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.ExpositorEvento
+GO
+CREATE TABLE ExpositorEvento(
+	IdExpositor int NOT NULL
+	constraint pk_idexpositor
+	foreign key (IdExpositor)
+	references Expositor(IdExpositor),
+	IdEvento int NOT NULL
+	constraint pk_idevento
+	foreign key (IdEvento)
+	references EventoTaller(IdEvento)
+	on delete cascade,
+	EstadoTabla bit NOT NULL,
+	primary key clustered (IdExpositor, IdEvento)
+)
+GO
+DROP TABLE IF EXISTS dbo.Sexo
+GO
+CREATE TABLE Sexo(
+	IdSexo int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreSexo varchar(50) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.Cargo
+GO
+CREATE TABLE Cargo(
+	IdCargo int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreCargo varchar(50) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.Persona
+GO
+CREATE TABLE Persona(
+	IdPersona int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	Dni varchar(8) unique NOT NULL, 
+	NombrePersona varchar(50) NOT NULL,
+	ApellidoPersona varchar(50) NOT NULL,
+	FechaNacimiento date NOT NULL,
+	Celular varchar(12) NOT NULL,
+	Trabaja bit NOT NULL,
+	EstadoTabla bit NOT NULL,
+	IdSexo int NOT NULL
+	foreign key (IdSexo)
+	references Sexo (IdSexo),
+	IdCargo int NOT NULL	
+	foreign key (IdCargo)
+	references Cargo (IdCargo)
+)
+GO
+DROP TABLE IF EXISTS dbo.TipoUsuario
+GO
+CREATE TABLE TipoUsuario(
+	IdTipoUsuario int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreTipoUsuario varchar(50) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.Usuario
+GO
+CREATE TABLE Usuario(
+	IdUsuario int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	Correo varchar(50) unique NOT NULL,
+	Contraseña varchar(200) NOT NULL,
+	Pregunta varchar(100) NOT NULL,
+	Respuesta varchar(100) NOT NULL,
+	EstadoConfirmacion bit NOT NULL,
+	EstadoTabla bit NOT NULL,
+	IdTipoUsuario int NOT NULL
+	constraint fk_idtipousuario_usuario
+	foreign key (IdTipoUsuario)
+	references TipoUsuario(IdTipoUsuario)
+	on delete cascade,
+	IdPersona int NOT NULL
+	constraint fk_idpersona_usuario
+	foreign key (IdPersona)
+	references Persona(IdPersona)
+	on delete cascade,
+)
+GO
+DROP TABLE IF EXISTS dbo.Asistencia
+GO
+CREATE TABLE Asistencia(
+	IdAsistencia int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreAsistencia varchar(50) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.EventoTaller_Usuario
+GO
+CREATE TABLE EventoTaller_Usuario(
+	IdEventoTaller int NOT NULL
+	constraint pk_evento_taller
+	foreign key (IdEventoTaller)
+	references EventoTaller(IdEvento),
+	IdUsuario int NOT NULL
+	constraint pk_idusuario_evento
+	foreign key (IdUsuario)
+	references Usuario(IdUsuario),
+	EstadoTabla bit NOT NULL,
+	IdAsistencia int NOT NULL
+	foreign key (IdAsistencia)
+	references Asistencia(IdAsistencia)
+	on delete cascade,
+	primary key clustered (IdEventoTaller, IdUsuario)
+)
+GO
+DROP TABLE IF EXISTS dbo.Comentarios
+GO
+CREATE TABLE Comentarios(
+	IdComentarios int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	Comentarios varchar(50) NOT NULL,
+	EstadoTabla bit NOT NULL,
+	IdEvento int NOT NULL
+	foreign key (IdEvento)
+	references EventoTaller(IdEvento),
+	IdUsuario int NOT NULL
+	constraint fk_idusuario_comentario
+	foreign key (IdUsuario)
+	references Usuario(IdUsuario)
+	on delete cascade
+)
+GO
+DROP TABLE IF EXISTS dbo.NoticiasExtremas
+GO
+CREATE TABLE NoticiasExtremas(
+	IdNoticia int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreNoticia varchar(50) NOT NULL,
+	Descripcion varchar(500) NOT NULL,
+	Imagen varchar(200),
+	FechaPublicacion date NOT NULL,
+	EstadoTabla bit NOT NULL,
+	IdUsuario int NOT NULL
+	constraint fk_idusuario_noticia
+	foreign key (IdUsuario)
+	references Usuario(IdUsuario)
+	on delete cascade
+)
+GO
+DROP TABLE IF EXISTS dbo.Nivel
+GO
+CREATE TABLE Nivel(
+	IdNivel int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreNivel varchar(50) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.TipoConocimiento
+GO
+CREATE TABLE TipoConocimiento(
+	IdTipoConocimiento int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreConocimiento varchar(100) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.Conocimiento
+GO
+CREATE TABLE Conocimiento(
+	IdConocimiento int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreConocimiento varchar(100) NOT NULL,
+	EstadoTabla bit NOT NULL,
+	IdTipoConocimiento int NOT NULL
+	constraint fk_idtipoconocimiento
+	foreign key (IdTipoConocimiento)
+	references TipoConocimiento(IdTipoConocimiento)
+	on delete cascade
+)
+GO
+DROP TABLE IF EXISTS dbo.PersonaConocimiento
+GO
+CREATE TABLE PersonaConocimiento(
+	IdPersona int NOT NULL
+	constraint pk_idpersona_conocimiento
+	foreign key (IdPersona)
+	references Persona(IdPersona)
+	on delete cascade,
+	IdConocimiento int NOT NULL
+	constraint pk_conocimiento_persona
+	foreign key (IdConocimiento)
+	references Conocimiento(IdConocimiento)
+	on delete cascade,
+	EstadoTabla bit NOT NULL,
+	IdNivel int NOT NULL
+	foreign key (IdNivel)
+	references Nivel(IdNivel)
+	on delete cascade,
+	primary key clustered (IdPersona, IdConocimiento)
+)
+GO
+DROP TABLE IF EXISTS dbo.Universidad
+GO
+CREATE TABLE Universidad(
+	IdUniversidad int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreUniversidad varchar(50) NOT NULL,
+	DescripcionUniversidad varchar(100) NOT NULL,
+	EstadoTabla bit NOT NULL
+)
+GO
+DROP TABLE IF EXISTS dbo.Estudio
+GO
+CREATE TABLE Estudio(
+	IdEstudio int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	NombreEstudio varchar(50) NOT NULL,
+	AñoIngreso date NOT NULL,
+	AñoFin date NOT NULL,
+	EstadoTabla bit NOT NULL,
+	IdPersona int NOT NULL
+	constraint fk_idpersona_estudio
+	foreign key (IdPersona)
+	references Persona(IdPersona)
+	on delete cascade,
+	IdUniversidad int NOT NULL
+	constraint fk_iduniversidad_estudio
+	foreign key (IdUniversidad)
+	references Universidad(IdUniversidad)
+	on delete cascade,
+)
