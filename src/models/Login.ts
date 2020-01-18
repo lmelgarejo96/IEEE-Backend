@@ -5,13 +5,15 @@ export class Login {
     IdUsuario: number;
     Correo: string;
     Contraseña: string;
-    Estado: boolean;
+    EstadoConfirmacion: boolean;
+    EstadoTabla: boolean;
     
-    constructor( idUsuario: number, correo: string, contraseña: string, estado: boolean) {
+    constructor( idUsuario: number, correo: string, contraseña: string, estadoConfirmacion: boolean, estadoTabla: boolean) {
         this.IdUsuario = idUsuario;
         this.Correo = correo;
         this.Contraseña = contraseña;
-        this.Estado = estado;
+        this.EstadoConfirmacion = estadoConfirmacion;
+        this.EstadoTabla = estadoTabla;
     }
     
     public getIdUsuario(): number {
@@ -38,12 +40,20 @@ export class Login {
         return this.Contraseña = contraseña;
     }
 
-    public getEstado(): boolean {
-        return this.Estado;
+    public getEstadoConfirmacion(): boolean {
+        return this.EstadoConfirmacion;
     }
 
-    public setEstado(estado: boolean): boolean {
-        return this.Estado = estado;
+    public setEstadoConfirmacion(estadoConfirmacion: boolean): boolean {
+        return this.EstadoConfirmacion = estadoConfirmacion;
+    }
+
+    public getEstadoTabla(): boolean {
+        return this.EstadoTabla;
+    }
+
+    public setEstadoTabla(estadoTabla: boolean): boolean {
+        return this.EstadoTabla = estadoTabla;
     }
 
     async validarContraseña(contraseña: string ): Promise<boolean> {

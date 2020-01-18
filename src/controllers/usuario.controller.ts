@@ -1,20 +1,18 @@
+import bcrypt from 'bcryptjs';
+
 import { Usuario, IUsuario } from '../models/Usuario';
 import { connection, sql } from '../connections/database';
-
-
-
 
 /* CRUD USERS */
 export class UsuarioController {
     
-    private query1: string = 'select * from Usuarios';
-    private query2: string = 'select * from Usuarios where Correo = @correo';
-    private query3: string = 'INSERT INTO Usuarios values(@correo, @contraseña, @pregunta, @respuesta, @estado, @eliminado)';
-    private query4: string = 'UPDATE Usuarios SET Correo = @correo, Contraseña = @contraseña, Pregunta = @pregunta, Respuesta = @respuesta, Estado = @estado WHERE IdUsuario = @id_usuario;';
-    private query5: string = 'SELECT * FROM Usuarios WHERE IdUsuario = @id';
-    private query6: string = 'UPDATE Usuarios set Eliminado = 1 WHERE IdUsuario = @id;';
+    private query1: string = 'select u.IdUsuario, u.Correo, u.Contraseña, u.Pregunta, u.Respuesta, u.EstadoConfirmacion, u.EstadoTabla, u.IdTipoUsuario, u.IdPersona from Usuario u, TipoUsuario t';
+    private query2: string = 'select * from Usuario where Correo = @correo';
+    private query3: string = 'INSERT INTO Usuario values(@correo, @contraseña, @pregunta, @respuesta, @estado, @eliminado)';
+    private query4: string = 'UPDATE Usuario SET Correo = @correo, Contraseña = @contraseña, Pregunta = @pregunta, Respuesta = @respuesta, Estado = @estado WHERE IdUsuario = @id_usuario;';
+    private query5: string = 'SELECT * FROM Usuario WHERE IdUsuario = @id';
+    private query6: string = 'UPDATE Usuario set Eliminado = 1 WHERE IdUsuario = @id;';
 
-    
 
     async listarUsuarios(): Promise<Usuario[]> {
         let conn = await connection();
@@ -31,8 +29,10 @@ export class UsuarioController {
                     usuario.setContraseña(usuarios[i].Contraseña);
                     usuario.setPregunta(usuarios[i].Pregunta,);
                     usuario.setRespuesta(usuarios[i].Respuesta,);
-                    usuario.setEstado(usuarios[i].Estado,);
-                    usuario.setEliminado(usuarios[i].Eliminado);
+                    usuario.setEstadoConfirmacion(usuarios[i].EstadoConfirmacion,);
+                    usuario.setEstadoTabla(usuarios[i].EstadoTabla);
+                    usuario.setIdTipoUsuario(usuarios[i].IdTipoUsuario);
+                    usuario.setIdPersona(usuarios[i].IdPersona);
                     lista_usuario.push(usuario);
                 }
             }
@@ -61,8 +61,8 @@ export class UsuarioController {
                 usuario.setContraseña(usuarios[0].Contraseña);
                 usuario.setPregunta(usuarios[0].Pregunta);
                 usuario.setRespuesta(usuarios[0].Respuesta);
-                usuario.setEstado(usuarios[0].Estado);
-                usuario.setEliminado(usuarios[0].Eliminado);
+                usuario.setEstadoConfirmacion(usuarios[0].EstadoConfirmacion);
+                usuario.setEstadoTabla(usuarios[0].EstadoTabla);
             }
             conn.close();
             return usuario;
@@ -82,8 +82,8 @@ export class UsuarioController {
             .input('contraseña', sql.NVarChar, usuario.getContraseña())
             .input('pregunta', sql.NVarChar, usuario.getPregunta())
             .input('respuesta', sql.NVarChar, usuario.getRespuesta())
-            .input('estado', sql.Bit, usuario.getEstado())
-            .input('eliminado', sql.Bit, usuario.getEliminado())
+            .input('estado', sql.Bit, usuario.getEstadoConfirmacion())
+            .input('eliminado', sql.Bit, usuario.getEstadoTabla())
             .query(this.query3);
             if(response){
                 conn.close();
@@ -106,7 +106,7 @@ export class UsuarioController {
             .input('contraseña', sql.NVarChar, usuario.getContraseña())
             .input('pregunta', sql.NVarChar, usuario.getPregunta())
             .input('respuesta', sql.NVarChar, usuario.getRespuesta())
-            .input('estado', sql.Bit, usuario.getEstado())
+            .input('estado', sql.Bit, usuario.getEstadoConfirmacion())
             .input('id_usuario', sql.Int, usuario.getIdUsuario())
             .query(this.query4);
             if(response){
@@ -138,7 +138,7 @@ export class UsuarioController {
                 usuario.setContraseña(usuarios[0].Contraseña);
                 usuario.setPregunta(usuarios[0].Pregunta,);
                 usuario.setRespuesta(usuarios[0].Respuesta,);
-                usuario.setEstado(usuarios[0].Estado,);
+                usuario.setEstadoConfirmacion(usuarios[0].EstadoConfirmacion,);
             }
 
             conn.close();
@@ -171,6 +171,9 @@ export class UsuarioController {
         }
     }
 
-    
+    async encriptarContraseña(contraseña: string): Promise<string> {
+        const SALT = await bcrypt.genSalt(5);
+        return await bcrypt.hash(contraseña, SALT);
+    }   
 
 }

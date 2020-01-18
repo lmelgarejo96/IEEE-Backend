@@ -26,7 +26,7 @@ export let connection =  async function Conn() {
 
 
 // MONGO DB
-import mongoose from 'mongoose';
+/* import mongoose from 'mongoose';
 
 mongoose.connect('mongodb://localhost/test', {
     useNewUrlParser: true,
@@ -34,5 +34,5 @@ mongoose.connect('mongodb://localhost/test', {
     useCreateIndex: true
 })
     .then( db => console.log('Database is connected!'))
-    .catch( error => console.log('There was an error trying to connect to the database..'))
+    .catch( error => console.log('There was an error trying to connect to the database..')) */
     

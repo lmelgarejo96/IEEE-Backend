@@ -4,8 +4,8 @@ import { connection, sql } from '../connections/database';
 
 export class LoginController {
     
-    private query1: string = 'SELECT * FROM Usuarios where Correo = @correo and Contraseña = @contraseña and Estado = 1';
-    private query2: string = 'select IdUsuario, Correo, Contraseña, Estado from Usuarios where Correo = @correo';
+    private query1: string = 'SELECT * FROM Usuario where Correo = @correo and Contraseña = @contraseña and Estado = 1';
+    private query2: string = 'select IdUsuario, Correo, Contraseña, EstadoConfirmacion, EstadoTabla from Usuario where Correo = @correo';
 
     async buscarPorCorreo (correo: string): Promise<any> {
         let conn = await connection();
@@ -16,9 +16,9 @@ export class LoginController {
 
             const usuarios = response.recordset;
             if(usuarios.length >= 1) {
-                const usuario: Login = new Login(usuarios[0].IdUsuario, usuarios[0].Correo, usuarios[0].Contraseña, usuarios[0].Estado);
+                const usuario: Login = new Login(usuarios[0].IdUsuario, usuarios[0].Correo, usuarios[0].Contraseña, usuarios[0].EstadoConfirmacion, usuarios[0].EstadoTabla);
                 conn.close();
-                return usuario
+                return usuario;
             }
             return null;
         } catch (error) {
