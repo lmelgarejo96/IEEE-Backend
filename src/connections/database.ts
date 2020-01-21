@@ -15,6 +15,7 @@ export let connection =  async function Conn() {
             return 
         }        
     } catch (err) {
+        console.log(err);
         console.log('Hubo un error conectando a la Base de datos')
     }
 }
