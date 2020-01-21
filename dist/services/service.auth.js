@@ -20,6 +20,10 @@ const usuario_controller_1 = require("../controllers/usuario.controller");
 // Instance
 const LOGINCONTROLLER = new login_controller_1.LoginController();
 const USERCONTROLLER = new usuario_controller_1.UsuarioController();
+<<<<<<< HEAD
+=======
+const EXPIRATION = 60 * 60 * 5; //5 horas
+>>>>>>> 2a8f0674e9805a00054c7e111cb812bbf7485949
 // Register
 exports.signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const CORREO = yield USERCONTROLLER.buscarPorCorreo(req.body.Correo);
@@ -44,6 +48,7 @@ exports.signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 // Login
 exports.signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+<<<<<<< HEAD
     const LOGIN = yield LOGINCONTROLLER.buscarPorCorreo(req.body.Correo);
     if (!LOGIN)
         return res.status(403).json('Email or password is wrong');
@@ -62,6 +67,33 @@ exports.signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         secure: true
     });
     res.status(200).json(LOGIN);
+=======
+    try {
+        const LOGIN = yield LOGINCONTROLLER.buscarPorCorreo(req.body.Correo);
+        if (!LOGIN)
+            return res.status(403).json('Email or password is wrong');
+        const CORRECTPASS = yield LOGIN.validarContraseña(req.body.Contraseña);
+        if (!CORRECTPASS)
+            return res.status(403).json('Invalid password');
+        if (LOGIN.getEstadoConfirmacion() === false ||
+            LOGIN.getEstadoTabla() === true)
+            return res.status(401).json('Access denied');
+        const TOKEN = yield jsonwebtoken_1.default.sign({ IdUsuario: LOGIN.getIdUsuario() }, process.env.SECRET_TOKEN || 'whatevertoken', {
+            expiresIn: EXPIRATION // 5 hours
+        });
+        console.log(TOKEN);
+        res.cookie('access_token', TOKEN, {
+            maxAge: EXPIRATION,
+            expires: new Date(Date.now() + EXPIRATION),
+            httpOnly: true,
+            secure: false // cambiar a true cuando se use https
+        });
+        res.status(200).json(LOGIN);
+    }
+    catch (error) {
+        console.log(error);
+    }
+>>>>>>> 2a8f0674e9805a00054c7e111cb812bbf7485949
 });
 // Profile info
 exports.profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
