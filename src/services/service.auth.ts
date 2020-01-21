@@ -41,6 +41,7 @@ export const signup = async (req: Request, res: Response) => {
 // Login
 export const signin = async (req: Request, res: Response) => { 
     try {
+        console.log(req.body);
         const LOGIN: Login = await LOGINCONTROLLER.buscarPorCorreo(req.body.Correo);
         if(!LOGIN) return res.status(403).json('Email or password is wrong'); 
     
