@@ -36,10 +36,8 @@ export class UsuarioController {
                     lista_usuario.push(usuario);
                 }
             }
-            conn.close();
             return lista_usuario;
         } catch (error) {
-            conn.close();
             console.log(error)
             throw error
         }
@@ -64,10 +62,8 @@ export class UsuarioController {
                 usuario.setEstadoConfirmacion(usuarios[0].EstadoConfirmacion);
                 usuario.setEstadoTabla(usuarios[0].EstadoTabla);
             }
-            conn.close();
             return usuario;
         } catch (error) {
-            conn.close();
             console.log(error)
             return null;
         }
@@ -86,14 +82,11 @@ export class UsuarioController {
             .input('eliminado', sql.Bit, usuario.getEstadoTabla())
             .query(this.query3);
             if(response){
-                conn.close();
                 return true;
             }else{
-                conn.close();
                 return false;
             };
         } catch (error) {
-            conn.close();
             return false;
         }
     }
@@ -110,14 +103,11 @@ export class UsuarioController {
             .input('id_usuario', sql.Int, usuario.getIdUsuario())
             .query(this.query4);
             if(response){
-                conn.close();
                 return true;
             }else{
-                conn.close();
                 return false;
             };
         } catch (error) {
-            conn.close();
             return false;
         }
     }
@@ -141,11 +131,9 @@ export class UsuarioController {
                 usuario.setEstadoConfirmacion(usuarios[0].EstadoConfirmacion,);
             }
 
-            conn.close();
             return usuario;
             
         } catch (error) {
-            conn.close();
             console.log(error)
             let obj: any = {};
             return obj;
@@ -159,14 +147,11 @@ export class UsuarioController {
             .input('id', sql.Int, id)
             .query(this.query6);
             if(response){
-                conn.close();
                 return true;
             }else{
-                conn.close();
                 return false;
             };
         } catch (error) {
-            conn.close();
             return false;
         }
     }

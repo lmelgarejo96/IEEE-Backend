@@ -17,12 +17,10 @@ export class LoginController {
             const usuarios = response.recordset;
             if(usuarios.length >= 1) {
                 const usuario: Login = new Login(usuarios[0].IdUsuario, usuarios[0].Correo, usuarios[0].Contraseña, usuarios[0].EstadoConfirmacion, usuarios[0].EstadoTabla);
-                conn.close();
                 return usuario;
             }
             return null;
         } catch (error) {
-            conn.close();
             console.log(error)
             return null;
         }
@@ -37,13 +35,11 @@ export class LoginController {
             .query(this.query1);
             console.log(response)
             if(response.rowsAffected[0]>=1){
-                conn.close();
                 return true;
             }else{
                 return false;
             };
         } catch (error) {
-            conn.close();
             console.log(error)
             return false;
         }
