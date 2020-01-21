@@ -1,6 +1,4 @@
 "use strict";
-<<<<<<< HEAD
-=======
 Object.defineProperty(exports, "__esModule", { value: true });
 class Persona {
     constructor() {
@@ -63,5 +61,4 @@ class Persona {
     }
 }
 exports.Persona = Persona;
->>>>>>> 2a8f0674e9805a00054c7e111cb812bbf7485949
 //# sourceMappingURL=Persona.js.map
