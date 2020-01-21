@@ -27,9 +27,9 @@ app.use(cors({
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/', (req, res) => {
+/* app.use('/', (req, res) => {
     res.send('hello world');
-})
+}) */
 
 // Static files
 

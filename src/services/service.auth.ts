@@ -59,7 +59,7 @@ export const signin = async (req: Request, res: Response) => {
             maxAge: EXPIRATION,
             expires: new Date(Date.now() + EXPIRATION),
             httpOnly: true,
-            secure: false // cambiar a true cuando se use https
+            secure: true // cambiar a true cuando se use https
         });
         res.status(200).json(LOGIN);
     } catch (error) {
